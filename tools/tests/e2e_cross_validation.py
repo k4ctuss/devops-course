@@ -8,7 +8,7 @@ from github import Auth, Github
 from github.GithubException import GithubException, UnknownObjectException
 
 
-SANDBOX = "your-user/your-fork"
+SANDBOX = "k4ctuss/devops-course"
 BASE = "sandbox-2026"
 WORKFLOW_NAME = "cross_task_check.yml"
 MARKER = "<!-- cross-task-check -->"

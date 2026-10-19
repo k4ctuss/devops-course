@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   cross-task-check:
-    runs-on: self-hosted
+    runs-on: e2e_test
     steps:
       - name: Checkout base branch (tools only)
         uses: actions/checkout@v4
