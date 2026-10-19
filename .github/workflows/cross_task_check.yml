@@ -8,7 +8,7 @@ on:
       - synchronize
       - edited # base branch changed
     branches:
-      - "sandbox-2026"
+      - sandbox-2026
     paths:
     - contributions/**
 
@@ -38,7 +38,7 @@ jobs:
         run: pip install "PyGithub==2.5.0"
 
       - name: Check cross-task week conflicts
-        run: python tools/cross_task_check.py
+        run: python tools/task_cross_validation.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
