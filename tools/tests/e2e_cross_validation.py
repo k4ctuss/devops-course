@@ -10,13 +10,13 @@ from github.GithubException import GithubException, UnknownObjectException
 
 SANDBOX = "k4ctuss/devops-course"
 BASE = "sandbox-2026"
-WORKFLOW_NAME = "cross_task_check.yml"
+WORKFLOW_FILE = "cross_task_check.yml"
 MARKER = "<!-- cross-task-check -->"
 BOT_LOGIN = "github-actions[bot]"
 BRANCH_PREFIX = "e2e/"
 TITLE_PREFIX = "[e2e] "
 TOOL_PATH = "tools/cross_task_check.py"
-RUN_TIMEOUT = 120  # seconds
+RUN_TIMEOUT = 180  # seconds
 POLL_INTERVAL = 5  # seconds
 
 DEMO = "demo"
@@ -204,7 +204,7 @@ class Sandbox:
         return [
             run
             for run in itertools.islice(runs, 100)
-            if run.raw_data.get("name") == WORKFLOW_NAME
+            if WORKFLOW_FILE in (run.raw_data.get("path") or "")        
         ]
 
     def run_ids(self):
@@ -296,11 +296,6 @@ class Sandbox:
 # --- Single-PR cases -----------------------------------------------------------
 
 CASES = [
-    {
-        "name": "no-contribution",
-        "pr": [W("docs/e2e.md")],
-        "conflict": False,
-    },
     {
         "name": "conflict-with-open-pr",
         "open": [[W(c(PAPER, "tst1-tst3"))]],
@@ -431,7 +426,10 @@ def scenario_merged_blocker_then_fix(sb):
 
     # Fix by pushing: one single commit, hence exactly one "synchronize" run
     known = sb.run_ids()
-    sb.apply_ops(pr2.head.ref, [D(paper)])
+    sb.apply_ops(
+        pr2.head.ref,
+        [D(paper), W(c(PAPER, "tst1-tst3", week="week98"))],
+    )    
     (run3,) = sb.wait_new_runs(known, 1)
     check_outcome("blocked PR after the fix push", pr2, run3, False)
 

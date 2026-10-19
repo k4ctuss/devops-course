@@ -1,0 +1,55 @@
+name: Test cross verification
+description: Run unit and e2e test on the python script that verify the potentials conflict between demo and paper on the same week
+
+on:
+  push:
+    branches:
+      - sandbox-2026
+    paths:
+      - "tools/task_cross_validation.py"
+      - "tools/tests/**"
+      - ".github/workflows/test_cross_verification.yml" # adjust to your file name
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install "PyGithub==2.5.0" pytest
+
+      - name: Run unit tests
+        run: python -m pytest tools/tests -v
+        env:
+          PYTHONPATH: tools
+
+  e2e:
+    needs: unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: cross-task-e2e
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install "PyGithub==2.5.0"
+
+      - name: Run end-to-end tests
+        run: python tools/tests/e2e_cross_task_check.py # adjust to your file name
+        env:
+          SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
