@@ -8,7 +8,7 @@ on:
     paths:
       - "tools/task_cross_validation.py"
       - "tools/tests/**"
-      - ".github/workflows/test_cross_verification.yml" # adjust to your file name
+      - ".github/workflows/test_cross_verif.yml"
 
 permissions:
   contents: read
@@ -50,6 +50,6 @@ jobs:
         run: pip install "PyGithub==2.5.0"
 
       - name: Run end-to-end tests
-        run: python tools/tests/e2e_cross_task_check.py # adjust to your file name
+        run: python tools/tests/e2e_cross_validation.py
         env:
           SANDBOX_TOKEN: ${{ secrets.SANDBOX_TOKEN }}
